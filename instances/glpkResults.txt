@@ -1,0 +1,175 @@
+****hamming6-2.clq.wcnf
+448 rows, 320 columns, 896 non-zeros
+320 integer variables, all of which are binary
+796 lines were read
+GLPK Integer Optimizer, v4.55
+448 rows, 320 columns, 896 non-zeros
+320 integer variables, all of which are binary
+Preprocessing...
+256 rows, 128 columns, 512 non-zeros
+128 integer variables, all of which are binary
+Scaling...
+ A: min|aij| = 1.000e+000  max|aij| = 1.000e+000  ratio = 1.000e+000
+Problem data seem to be well scaled
+Constructing initial basis...
+Size of triangular part is 256
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.55
+256 rows, 128 columns, 512 non-zeros
+      0: obj =  1.920000000e+002  infeas = 1.920e+002 (0)
+*    77: obj =  1.920000000e+002  infeas = 0.000e+000 (0)
+*   235: obj =  2.240000000e+002  infeas = 0.000e+000 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++   235: mip =     not found yet <=              +inf        (1; 0)
++   235: >>>>>  2.240000000e+002 <=  2.240000000e+002   0.0% (1; 0)
++   235: mip =  2.240000000e+002 <=     tree is empty   0.0% (0; 1)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.0 secs
+Memory used: 0.4 Mb (463272 bytes)
+Writing MIP solution to 'C:\Users\gianei\AppData\Local\Temp\42304-pulp.sol'...
+Status: Optimal
+Cláusulas satisfeitas =  224
+
+
+****hamming8-2.clq.wcnf
+2304 rows, 1536 columns, 4608 non-zeros
+1536 integer variables, all of which are binary
+3968 lines were read
+GLPK Integer Optimizer, v4.55
+2304 rows, 1536 columns, 4608 non-zeros
+1536 integer variables, all of which are binary
+Preprocessing...
+1280 rows, 512 columns, 2560 non-zeros
+512 integer variables, all of which are binary
+Scaling...
+ A: min|aij| = 1.000e+000  max|aij| = 1.000e+000  ratio = 1.000e+000
+Problem data seem to be well scaled
+Constructing initial basis...
+Size of triangular part is 1280
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.55
+1280 rows, 512 columns, 2560 non-zeros
+      0: obj =  1.024000000e+003  infeas = 1.024e+003 (0)
+    500: obj =  1.024000000e+003  infeas = 3.320e+002 (0)
+*   762: obj =  1.024000000e+003  infeas = 0.000e+000 (0)
+*  1000: obj =  1.125000000e+003  infeas = 0.000e+000 (0)
+*  1480: obj =  1.152000000e+003  infeas = 0.000e+000 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1480: mip =     not found yet <=              +inf        (1; 0)
++  1480: >>>>>  1.152000000e+003 <=  1.152000000e+003   0.0% (1; 0)
++  1480: mip =  1.152000000e+003 <=     tree is empty   0.0% (0; 1)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.1 secs
+Memory used: 1.9 Mb (2031368 bytes)
+Writing MIP solution to 'C:\Users\gianei\AppData\Local\Temp\24452-pulp.sol'...
+Status: Optimal
+Cláusulas satisfeitas =  1152
+
+
+****hamming8-4.clq.wcnf
+
+
+****c-fat200-1.clq.wcnf
+
+
+****brock400_3.clq.wcnf
+
+
+****san400_0.5_1.clq
+80200 rows, 40700 columns, 160400 non-zeros
+40700 integer variables, all of which are binary
+125806 lines were read
+GLPK Integer Optimizer, v4.55
+80200 rows, 40700 columns, 160400 non-zeros
+40700 integer variables, all of which are binary
+Preprocessing...
+40300 rows, 800 columns, 80600 non-zeros
+800 integer variables, all of which are binary
+Scaling...
+ A: min|aij| = 1.000e+000  max|aij| = 1.000e+000  ratio = 1.000e+000
+Problem data seem to be well scaled
+Constructing initial basis...
+Size of triangular part is 40300
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.55
+40300 rows, 800 columns, 80600 non-zeros
+
+**
+
++840359: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36869; 2374)
++840516: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36875; 2375)
++840648: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36879; 2375)
++840711: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36885; 2375)
++840890: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36890; 2376)
++840961: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36895; 2376)
++841181: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36901; 2377)
++841262: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36907; 2377)
++841484: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36913; 2378)
++841503: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36919; 2378)
++841651: mip =  3.990800000e+004 <=  3.998200000e+004   0.2% (36925; 2379)
+Time used: 33278.0 secs.  Memory used: 845.6 Mb.
+
+
+
+****hamming10-4.clq
+180224 rows, 91648 columns, 360448 non-zeros
+91648 integer variables, all of which are binary
+283087 lines were read
+GLPK Integer Optimizer, v4.55
+180224 rows, 91648 columns, 360448 non-zeros
+91648 integer variables, all of which are binary
+Preprocessing...
+90624 rows, 2048 columns, 181248 non-zeros
+2048 integer variables, all of which are binary
+Scaling...
+ A: min|aij| = 1.000e+000  max|aij| = 1.000e+000  ratio = 1.000e+000
+Problem data seem to be well scaled
+Constructing initial basis...
+Size of triangular part is 90624
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.55
+90624 rows, 2048 columns, 181248 non-zeros
+
+**
+
++126056: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3720; 73)
++126449: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3721; 73)
++126454: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3722; 73)
++126460: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3723; 73)
++126465: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3724; 73)
++126469: mip =  8.962900000e+004 <=  9.010400000e+004   0.5% (3725; 73)
+Time used: 30761.4 secs.  Memory used: 160.3 Mb.
+
+
+
+****brock800_1.clq
+224990 rows, 113695 columns, 449980 non-zeros
+113695 integer variables, all of which are binary
+352927 lines were read
+GLPK Integer Optimizer, v4.55
+224990 rows, 113695 columns, 449980 non-zeros
+113695 integer variables, all of which are binary
+Preprocessing...
+112895 rows, 1600 columns, 225790 non-zeros
+1600 integer variables, all of which are binary
+Scaling...
+ A: min|aij| = 1.000e+000  max|aij| = 1.000e+000  ratio = 1.000e+000
+Problem data seem to be well scaled
+Constructing initial basis...
+Size of triangular part is 112895
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.55
+112895 rows, 1600 columns, 225790 non-zeros
+
+**
+
++206987: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4232; 42)
++206991: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4233; 42)
++206994: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4234; 42)
++207002: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4235; 42)
++207006: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4236; 42)
++207010: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4237; 42)
++207013: mip =  1.121120000e+005 <=  1.124750000e+005   0.3% (4238; 42)
+Time used: 29673.2 secs.  Memory used: 287.6 Mb.
