@@ -1,154 +1,130 @@
 from numpy import *
 from pulp import *
+import argparse
+
 
 # funções específicas do problema
 
-def read_instance():
-    with open("instances/hamming8-4.clq.wcnf", mode='r') as f:
-        lines = f.readlines()
+class Instance():
+    def __init__(self, file_wcnf, max_running_time_seconds):
+        # args
+        self.file_wcnf = file_wcnf
+        self.max_running_time_seconds = max_running_time_seconds
 
-        cont_clausules = 0
-        for line in lines:
-            values = str.split(line)
-            if values[0] == 'c': continue
-            if values[0] == 'p': # definição do tamanho
-                num_variables =  int(values[2])
-                num_clausules = int(values[3])
-                num_top = int (values[4])
-                instance = zeros((num_clausules, num_variables), int) # index0: hard=1 soft=0
-                hard_clausules = zeros(num_clausules, int)
-                continue
+        self.num_variables = None
+        self.num_clauses = None
+        self.num_top = None
 
+        self.instance_matrix = None  # matrix [variables, clauses]: 0 = not existent, 1 = positive, -1 = negated
+        self.hard_clauses = None  # instantiate an array for each clause: hard=1 soft=0
 
+        self.read_instance()
 
-            for i in range(1, len(values)-1):
-                instance[cont_clausules, abs(int(values[i]))-1] = 1 if int(values[i]) > 0 else -1
+    def read_instance(self):
 
-            if int(values[0]) == num_top:
-                hard_clausules[cont_clausules] = 1
+        with open(self.file_wcnf, mode='r') as f:
+            print('Reading file ', self.file_wcnf)
+            lines = f.readlines()
 
-            cont_clausules += 1
+            clause_i = 0
+            for line in lines:
+                values = str.split(line)
 
+                if values[0] == 'c':
+                    continue
 
+                if values[0] == 'p':  # size definition
+                    self.num_variables = int(values[2])
+                    self.num_clauses = int(values[3])
+                    self.num_top = int(values[4])
 
-    return (instance, hard_clausules, num_variables, num_clausules)
+                    self.instance_matrix = zeros((self.num_clauses, self.num_variables), int)
 
-def initial_solution():
-    pass
+                    self.hard_clauses = zeros(self.num_clauses, int)
+                    
+                    continue
 
-def propos_change():
-    pass
+                # populate variables
+                for i in range(1, len(values) - 1):
+                    var_j = abs(int(values[i])) - 1
+                    self.instance_matrix[clause_i, var_j] = (1 if int(values[i]) > 0 else -1)
 
-def change_solution():
-    pass
+                # populate hard clauses
+                if int(values[0]) == self.num_top:
+                    self.hard_clauses[clause_i] = 1
 
-def final_solution():
-    pass
+                clause_i += 1
 
-# funções genéricas de simulated annealing
+    def initial_solution(self):
+        pass
 
-def iternum():
-    pass
+    def propose_change(self):
+        pass
 
-def initprob():
-    pass
+    def change_solution(self):
+        pass
 
-def tempfactor():
-    pass
+    def final_solution(self):
+        pass
 
-def sizefactor():
-    pass
+    # funções genéricas de simulated annealing
 
-def minpercent():
-    pass
+    def iternum(self):
+        pass
 
+    def initprob(self):
+        pass
 
-if __name__ == '__main__':
-    print ("hello")
-    coisa = read_instance()
+    def tempfactor(self):
+        pass
 
-    # if len(sys.argv) > 1:
-    #     if sys.argv[1] == 'black':
-    #         print("Black")
+    def sizefactor(self):
+        pass
 
-
-    """
-    The Beer Distribution Problem for the PuLP Modeller
-    Authors: Antony Phillips, Dr Stuart Mitchell  2007
-    """
-
-
-
-    # declare your variables
-    vars_x = [LpVariable("x"+str(i), 0, 1, LpInteger) for i in range(coisa[2])]
-    # x1 = LpVariable("x1", 0, 1, LpInteger)
-    # x2 = LpVariable("x2", 0, 1, LpInteger)
-    # x3 = LpVariable("x3", 0, 1, LpInteger)
-
-    #declare c variables
-    vars_c = [LpVariable("c"+str(i), 0, 1, LpInteger) for i in range(coisa[3])]
-    # c1 = LpVariable("c1", 0, 1, LpInteger)
-    # c2 = LpVariable("c2", 0, 1, LpInteger)
-    # c3 = LpVariable("c3", 0, 1, LpInteger)
-    # c4 = LpVariable("c4", 0, 1, LpInteger)
-    # c5 = LpVariable("c5", 0, 1, LpInteger)
-    # c6 = LpVariable("c6", 0, 1, LpInteger)
+    def minpercent(self):
+        pass
 
 
+def solve_with_glpk(instance):
     # defines the problem
-    prob = LpProblem("problem", LpMaximize)
-
+    problem = LpProblem("problem", LpMaximize)
+    # declare variables
+    # CNF variables
+    vars_x = [LpVariable("x" + str(i), 0, 1, LpInteger) for i in
+              range(instance.num_variables)]  # LpVariaveble contained in {0,1}
+    # CNF clauses
+    vars_c = [LpVariable("c" + str(i), 0, 1, LpInteger) for i in range(instance.num_clauses)]
     # defines the constraints
-    for i in range(coisa[3]): #para cada clausula
-        restr = []
-        contN = 0
-        for j in range(coisa[2]): #para cada var
-            if coisa[0][i,j] == 1:
-                restr.append(vars_x[j])
-            if coisa[0][i,j] == -1:
-                restr.append(-vars_x[j])
-                contN +=1
-        restr.append(contN)
-        # prob += lpSum([(vars[i][j] if coisa[0][i,j] == 1 else (1 - vars_x[j] if coisa[0][i,j] == -1 else 0 )) for j in range(coisa[2])])>=vars_c[i]
+    for i in range(instance.num_clauses):  #for each CNF clause
+        restriction = []
+        count_negated = 0
+        for j in range(instance.num_variables):  #for each clause variable
+            if instance.instance_matrix[i, j] == 1:
+                restriction.append(vars_x[j])
+            if instance.instance_matrix[i, j] == -1:
+                restriction.append(-vars_x[j])
+                count_negated += 1
+        restriction.append(count_negated)
 
-        if coisa[1][i] == 1:
-            prob += 1 <= lpSum(restr)
+        #defines proper limitation according if soft or hard clause
+        if instance.hard_clauses[i] == 1:
+            problem += 1 <= lpSum(restriction)
         else:
-            prob += vars_c[i] <= lpSum(restr)
-
-
-    # prob += c1 <= 1 - x1
-    # prob += c2 <= 1 - x2
-    # prob += c3 <= 1 - x3
-    # prob += c4 <= x1 + x2
-    # prob += c5 <= 2 - x1 - x3
-    # prob += c6 <= x2 + 1 - x3
-
-    # restrições hard
-    # for i in range(coisa[3]):
-    #     if coisa[1][i] == 1:
-    #         prob += vars_c[i] >= 1
-
-    # prob += c1 >= 1
-    # prob += c2 >= 1
+            problem += vars_c[i] <= lpSum(restriction)
 
 
     # defines the objective function to maximize
-    prob += lpSum( vars_c[i] for i in range(coisa[3]))
-    # prob += c1 + c2 + c3 + c4 + c5 + c6
+    problem += lpSum(vars_c[i] for i in range(instance.num_clauses))
+    problem.solve(pulp.GLPK(keepFiles=1, options=['--tmlim ' + str(instance.max_running_time_seconds)]))
+    print("Satisfied clauses = ", value(problem.objective))
 
-    # The problem data is written to an .lp file
-    prob.writeLP("P-MaxSAT.lp")
 
-    # The problem is solved using PuLP's choice of Solver (GLPK)
-    prob.solve(pulp.GLPK())
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-f', '--file', help='String to open file', default="instances/hamming6-2.clq.wcnf")
+    parser.add_argument('-t', '--time', help='Max running time in seconds', type=int, default=3600)
+    args = vars(parser.parse_args())
 
-    # The status of the solution is printed to the screen
-    print("Status:", LpStatus[prob.status])
+    instance = Instance(args['file'], args['time'])
 
-    # Each of the variables is printed with it's resolved optimum value
-    # for v in prob.variables():
-    #     print(v.name, "=", v.varValue)
-
-    # The optimised objective function value is printed to the screen
-    print("Cláusulas satisfeitas = ", value(prob.objective))
+    solve_with_glpk(instance)
