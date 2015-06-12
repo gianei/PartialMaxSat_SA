@@ -1,6 +1,8 @@
 from numpy import *
 from pulp import *
 import argparse
+from numpy.random.mtrand import randint, choice
+from random import Random
 
 
 # funções específicas do problema
@@ -54,9 +56,10 @@ class Instance():
                     self.hard_clauses[clause_i] = 1
 
                 clause_i += 1
+    
+            #print(self.instance_matrix)
+            #print(self.hard_clauses)
 
-    def initial_solution(self):
-        pass
 
     def propose_change(self):
         pass
@@ -84,6 +87,95 @@ class Instance():
     def minpercent(self):
         pass
 
+class Solution:
+    def __init__(self,instance):
+        self.solution = None
+        self.instance = instance
+
+        self.generate_solution()
+
+    def check_satisfied_clause(self,clause):
+        satisfied = False
+        unsatvars = []
+
+        for j in range(self.instance.num_variables):
+            if (clause[j] == 1):
+                if (self.solution[j] == 1):
+                    satisfied = True
+                    break
+                else:
+                    unsatvars.append(j)
+            elif (clause[j] == -1):
+                if (self.solution[j] == 0):
+                    satisfied = True
+                    break
+                else:
+                    unsatvars.append(j)
+
+#        print("Unsatisfied variables:",unsatvars)
+#        print("Satisfied?",satisfied)
+
+        return satisfied,unsatvars
+
+    def generate_solution(self):
+        self.solution = [randint(0,1) for i in range(self.instance.num_variables)]
+
+        for i,clause in enumerate(self.instance.instance_matrix):
+            if self.instance.hard_clauses[i] == 1:
+                satisfied, possiblevars = self.check_satisfied_clause(clause)
+
+                if not satisfied:
+                    self.solution[choice(possiblevars)] = 1
+
+        return
+
+    def check_solution_feasibility(self):
+        feasible = True
+
+        for i,clause in enumerate(self.instance.instance_matrix):
+            if self.instance.hard_clauses[i] == 1:
+                satisfied, unsatvars = self.check_satisfied_clause(clause)
+
+                if not satisfied:
+                    feasible = False
+                    break
+
+        return feasible
+
+    def get_solution_total(self):
+        total = 0
+
+        for clause in self.instance.instance_matrix:
+            satisfied, unsatvars = self.check_satisfied_clause(clause)
+
+            if satisfied:
+                total += 1
+
+        return total
+
+def sa_prob(newvalue,oldvalue,temperature):
+    return exp((newvalue - oldvalue)/temperature)
+
+def solve_with_sa(instance,startingtemp,coolingrate,mintemp,maxiter):
+    currentsolution = Solution(instance)
+    currentvalue = currentsolution.get_solution_total()
+    currenttemp = startingtemp
+
+    while currenttemp > mintemp:
+        i = 0
+        while i < maxiter:
+            newsolution = Solution(instance)
+            newvalue = newsolution.get_solution_total()
+            
+            if (sa_prob(newvalue,currentvalue,currenttemp) > random.random()):
+                currentsolution = newsolution
+                currentvalue = newvalue
+
+            i += 1
+        currenttemp *= coolingrate
+
+    print("Solution:",currentsolution.solution)
+    print ("Satisfied clauses =", currentvalue)
 
 def solve_with_glpk(instance):
     # defines the problem
@@ -116,7 +208,7 @@ def solve_with_glpk(instance):
     # defines the objective function to maximize
     problem += lpSum(vars_c[i] for i in range(instance.num_clauses))
     problem.solve(pulp.GLPK(keepFiles=1, options=['--tmlim ' + str(instance.max_running_time_seconds)]))
-    print("Satisfied clauses = ", value(problem.objective))
+    print("Satisfied clauses =", value(problem.objective))
 
 
 if __name__ == "__main__":
@@ -127,4 +219,5 @@ if __name__ == "__main__":
 
     instance = Instance(args['file'], args['time'])
 
-    solve_with_glpk(instance)
+    #solve_with_glpk(instance)
+    solve_with_sa(instance,10,0.75,0.1,10)
