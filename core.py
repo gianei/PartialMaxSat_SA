@@ -2,7 +2,7 @@ from numpy import *
 from pulp import *
 import argparse
 from numpy.random.mtrand import randint, choice
-from random import Random
+import cProfile
 
 
 # funções específicas do problema
@@ -92,25 +92,43 @@ class Solution:
         self.solution = None
         self.instance = instance
 
+
+
         self.generate_solution()
 
-    def check_satisfied_clause(self,clause):
+    def check_satisfied_clause(self, clauses):
         satisfied = False
         unsatvars = []
 
-        for j in range(self.instance.num_variables):
-            if (clause[j] == 1):
+        a = argwhere(clauses)
+        for j in nditer(a):
+            # print ("%d <%d>" % (it[0], it.index))
+            if (clauses[j] == 1):
                 if (self.solution[j] == 1):
                     satisfied = True
                     break
                 else:
                     unsatvars.append(j)
-            elif (clause[j] == -1):
+            elif (clauses[j] == -1):
                 if (self.solution[j] == 0):
                     satisfied = True
                     break
                 else:
                     unsatvars.append(j)
+
+        # for j in range(self.instance.num_variables):
+        #     if (clauses[j] == 1):
+        #         if (self.solution[j] == 1):
+        #             satisfied = True
+        #             break
+        #         else:
+        #             unsatvars.append(j)
+        #     elif (clauses[j] == -1):
+        #         if (self.solution[j] == 0):
+        #             satisfied = True
+        #             break
+        #         else:
+        #             unsatvars.append(j)
 
 #        print("Unsatisfied variables:",unsatvars)
 #        print("Satisfied?",satisfied)
@@ -129,18 +147,18 @@ class Solution:
 
         return
 
-    def check_solution_feasibility(self):
-        feasible = True
-
-        for i,clause in enumerate(self.instance.instance_matrix):
-            if self.instance.hard_clauses[i] == 1:
-                satisfied, unsatvars = self.check_satisfied_clause(clause)
-
-                if not satisfied:
-                    feasible = False
-                    break
-
-        return feasible
+    # def check_solution_feasibility(self):
+    #     feasible = True
+    #
+    #     for i,clause in enumerate(self.instance.instance_matrix):
+    #         if self.instance.hard_clauses[i] == 1:
+    #             satisfied, unsatvars = self.check_satisfied_clause(clause)
+    #
+    #             if not satisfied:
+    #                 feasible = False
+    #                 break
+    #
+    #     return feasible
 
     def get_solution_total(self):
         total = 0
@@ -157,6 +175,7 @@ def sa_prob(newvalue,oldvalue,temperature):
     return exp((newvalue - oldvalue)/temperature)
 
 def solve_with_sa(instance,startingtemp,coolingrate,mintemp,maxiter):
+    print ("Solving with SA:")
     currentsolution = Solution(instance)
     currentvalue = currentsolution.get_solution_total()
     currenttemp = startingtemp
@@ -213,11 +232,12 @@ def solve_with_glpk(instance):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Description of your program')
-    parser.add_argument('-f', '--file', help='String to open file', default="instances/hamming6-2.clq.wcnf")
+    parser.add_argument('-f', '--file', help='String to open file', default="instances/hamming8-4.clq.wcnf")
     parser.add_argument('-t', '--time', help='Max running time in seconds', type=int, default=3600)
     args = vars(parser.parse_args())
 
     instance = Instance(args['file'], args['time'])
 
     #solve_with_glpk(instance)
-    solve_with_sa(instance,10,0.75,0.1,10)
+    cProfile.run('solve_with_sa(instance,10,0.75,0.1,10)')
+    #solve_with_sa(instance,10,0.75,0.1,10)
