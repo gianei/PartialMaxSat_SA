@@ -92,58 +92,61 @@ class Solution:
         self.solution = None
         self.instance = instance
 
-
-
         self.generate_solution()
 
-    def check_satisfied_clause(self, clauses):
+    def check_satisfied_unsat_clause(self, clause):
         satisfied = False
         unsatvars = []
 
-        a = argwhere(clauses)
+        a = argwhere(clause)
         for j in nditer(a):
             # print ("%d <%d>" % (it[0], it.index))
-            if (clauses[j] == 1):
+            if (clause[j] == 1):
                 if (self.solution[j] == 1):
                     satisfied = True
                     break
                 else:
                     unsatvars.append(j)
-            elif (clauses[j] == -1):
+            elif (clause[j] == -1):
                 if (self.solution[j] == 0):
                     satisfied = True
                     break
                 else:
                     unsatvars.append(j)
-
-        # for j in range(self.instance.num_variables):
-        #     if (clauses[j] == 1):
-        #         if (self.solution[j] == 1):
-        #             satisfied = True
-        #             break
-        #         else:
-        #             unsatvars.append(j)
-        #     elif (clauses[j] == -1):
-        #         if (self.solution[j] == 0):
-        #             satisfied = True
-        #             break
-        #         else:
-        #             unsatvars.append(j)
-
 #        print("Unsatisfied variables:",unsatvars)
 #        print("Satisfied?",satisfied)
 
         return satisfied,unsatvars
 
+    def check_satisfied_clause(self, clause):
+        satisfied = False
+
+        a = argwhere(clause)
+        for j in nditer(a):
+            # print ("%d <%d>" % (it[0], it.index))
+            if (clause[j] == 1):
+                if (self.solution[j] == 1):
+                    satisfied = True
+                    break
+            elif (clause[j] == -1):
+                if (self.solution[j] == 0):
+                    satisfied = True
+                    break
+
+        return satisfied
+
     def generate_solution(self):
-        self.solution = [randint(0,1) for i in range(self.instance.num_variables)]
+        # self.solution = [randint(0,1) for i in range(self.instance.num_variables)]    #generates only zeros (wrong)
+        self.solution = [0 for i in range(self.instance.num_variables)]                 #same as above
+        # self.solution = random.random_integers(0,1,self.instance.num_variables)       #generate [0,1] (right but slower)
+        # self.solution = zeros(self.instance.num_variables, dtype="int")                 #generate zeros
 
-        for i,clause in enumerate(self.instance.instance_matrix):
-            if self.instance.hard_clauses[i] == 1:
-                satisfied, possiblevars = self.check_satisfied_clause(clause)
+        a = argwhere(self.instance.hard_clauses) #indexes of hard clauses
+        for i in nditer(a):
+            satisfied, possiblevars = self.check_satisfied_unsat_clause(self.instance.instance_matrix[i])
 
-                if not satisfied:
-                    self.solution[choice(possiblevars)] = 1
+            if not satisfied:
+                self.solution[choice(possiblevars)] = 1
 
         return
 
@@ -162,12 +165,15 @@ class Solution:
 
     def get_solution_total(self):
         total = 0
+        #hard clauses are always satisfied at this point
+        total += count_nonzero(self.instance.hard_clauses)
 
-        for clause in self.instance.instance_matrix:
-            satisfied, unsatvars = self.check_satisfied_clause(clause)
+        a = argwhere(self.instance.hard_clauses == 0) #indexes of soft clauses
+        for i in nditer(a):
+            satisfied = self.check_satisfied_clause(self.instance.instance_matrix[i])
 
             if satisfied:
-                total += 1
+                    total += 1
 
         return total
 
