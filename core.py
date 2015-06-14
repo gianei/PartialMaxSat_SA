@@ -98,8 +98,8 @@ class Solution:
         satisfied = False
         unsatvars = []
 
-        a = argwhere(clause)
-        for j in nditer(a):
+        a = nonzero(clause)
+        for j in nditer(a[0]):
             # print ("%d <%d>" % (it[0], it.index))
             if (clause[j] == 1):
                 if (self.solution[j] == 1):
@@ -121,8 +121,8 @@ class Solution:
     def check_satisfied_clause(self, clause):
         satisfied = False
 
-        a = argwhere(clause)
-        for j in nditer(a):
+        a = nonzero(clause)
+        for j in nditer(a[0]):
             # print ("%d <%d>" % (it[0], it.index))
             if (clause[j] == 1):
                 if (self.solution[j] == 1):
@@ -141,8 +141,8 @@ class Solution:
         # self.solution = random.random_integers(0,1,self.instance.num_variables)       #generate [0,1] (right but slower)
         # self.solution = zeros(self.instance.num_variables, dtype="int")                 #generate zeros
 
-        a = argwhere(self.instance.hard_clauses) #indexes of hard clauses
-        for i in nditer(a):
+        a = where(self.instance.hard_clauses) #indexes of hard clauses
+        for i in nditer(a[0]):
             satisfied, possiblevars = self.check_satisfied_unsat_clause(self.instance.instance_matrix[i])
 
             if not satisfied:
@@ -150,26 +150,13 @@ class Solution:
 
         return
 
-    # def check_solution_feasibility(self):
-    #     feasible = True
-    #
-    #     for i,clause in enumerate(self.instance.instance_matrix):
-    #         if self.instance.hard_clauses[i] == 1:
-    #             satisfied, unsatvars = self.check_satisfied_clause(clause)
-    #
-    #             if not satisfied:
-    #                 feasible = False
-    #                 break
-    #
-    #     return feasible
-
     def get_solution_total(self):
         total = 0
         #hard clauses are always satisfied at this point
         total += count_nonzero(self.instance.hard_clauses)
 
-        a = argwhere(self.instance.hard_clauses == 0) #indexes of soft clauses
-        for i in nditer(a):
+        a = where(self.instance.hard_clauses == 0) #indexes of soft clauses
+        for i in nditer(a[0]):
             satisfied = self.check_satisfied_clause(self.instance.instance_matrix[i])
 
             if satisfied:
