@@ -35,7 +35,6 @@ bool Solution::check_satisfied_clause(int index) {
 	return satisfied;
 }
 
-
 bool Solution::check_satisfied_clause(int index, std::vector<int>& unsat) {
 	bool satisfied = false;
 
@@ -58,6 +57,14 @@ bool Solution::check_satisfied_clause(int index, std::vector<int>& unsat) {
 	return satisfied;
 }
 
+bool Solution::is_feasible(){
+	for (int i=0,l=instance.getNbclauses();i<l;++i){
+		if (is_hard_clause(i) && !check_satisfied_clause(i))
+			return false;
+	}
+	return true;
+}
+
 void Solution::copy_solution(const Solution &solution){
 	values = solution.getValues();
 }
@@ -69,9 +76,31 @@ void Solution::generate_solution() {
 	for (int i=0,l=instance.getNbclauses();i<l;++i){
 		satisfied = check_satisfied_clause(i,unsatvars);
 
-		if (!satisfied)
+		if (is_hard_clause(i) && !satisfied){
+			// definição do método para escolha de variavel para satisfazer a expressão
+			// resolvido na compilação para ganhar desempenho
+#ifdef FIRST_VAR
+			values[unsatvars.front()] = 1;
+#elif LAST_VAR
+			values[unsatvars.back()] = 1;
+#else
 			values[unsatvars[rand()%unsatvars.size()]] = 1;
+#endif
+		}
 	}
+}
+
+void Solution::neighbour_solution() {
+#ifdef NEIGH_FLIP1
+	int var = rand()%values.size();
+	values[var] = !values[var];
+#elif NEIGH_SWAP2
+	int var1 = rand()%values.size();
+	int var2 = rand()%values.size();
+	int temp = values[var1];
+	values[var1] = values[var2];
+	values[var2] = temp;
+#endif
 }
 
 int Solution::calculate_total() {

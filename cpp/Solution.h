@@ -8,6 +8,15 @@
 #ifndef SOLUTION_H_
 #define SOLUTION_H_
 
+// método de criação de solução vizinha escolhido
+#define NEIGH_FLIP1
+//#define NEIGH_SWAP2
+
+// método de factibilização de uma solução infactivel
+//#define RANDOM_VAR
+#define FIRST_VAR
+//#define LAST_VAR
+
 #include "Instance.h"
 
 class Solution {
@@ -16,7 +25,11 @@ public:
 
 	bool check_satisfied_clause(int index);
 	bool check_satisfied_clause(int index, std::vector<int> &unsat);
+	bool is_feasible();
+	inline bool is_hard_clause(int clause){ return instance.hard_clauses[clause];}
+
 	void generate_solution();
+	void neighbour_solution();
 	void copy_solution(const Solution &solution);
 	int calculate_total();
 

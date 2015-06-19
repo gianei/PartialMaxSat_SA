@@ -55,8 +55,11 @@ void Instance::load(const char *filename){
 					inst_mat[i][ val - 1] = 1;
 			}
 		}
-	} else
+		wcnf.close();
+	} else {
+		wcnf.close();
 		throw 1;
+	}
 }
 
 void Instance::print_mat() {

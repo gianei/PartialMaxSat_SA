@@ -6,6 +6,10 @@
 #include "Instance.h"
 #include "Solution.h"
 
+// converter soluções infactiveis para factiveis ou descartar
+#define MAKE_FEASIBLE
+//#define DISCARD_UNFEASIBLE
+
 inline float randfloat(){
 	return static_cast<float>(rand())/static_cast<float>(RAND_MAX);
 }
@@ -19,6 +23,7 @@ void solve_with_sa(Instance &inst,float startingtemp,float coolingrate,float min
 
 	Solution currentsolution(inst),newsolution(inst);
 	currentsolution.generate_solution();
+	newsolution.generate_solution();
 
     int currentvalue = currentsolution.calculate_total();
     int newvalue = 0;
@@ -26,16 +31,21 @@ void solve_with_sa(Instance &inst,float startingtemp,float coolingrate,float min
 
 	while (currenttemp > mintemp){
     	int i = 0;
-    	while (i < maxiter){
-			newsolution.generate_solution();
-			newvalue = newsolution.calculate_total();
+    	while (i++ < maxiter){
+    		newsolution.neighbour_solution();
+#ifdef MAKE_FEASIBLE
+    		newsolution.generate_solution();
+#elif DISCARD_UNFEASIBLE
+    		if (!newsolution.is_feasible())
+    			continue;
+#endif
+
+    		newvalue = newsolution.calculate_total();
 
 			if (sa_prob(newvalue,currentvalue,currenttemp) > randfloat()){
 				currentsolution.copy_solution(newsolution);
 				currentvalue = newvalue;
 			}
-
-			++i;
     	}
 
 		currenttemp *= coolingrate;
