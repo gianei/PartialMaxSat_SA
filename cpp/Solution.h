@@ -9,12 +9,12 @@
 #define SOLUTION_H_
 
 // método de criação de solução vizinha escolhido
-#define NEIGH_FLIP1
-//#define NEIGH_SWAP2
+//#define NEIGH_FLIP1
+#define NEIGH_SWAP2
 
 // método de factibilização de uma solução infactivel
-//#define RANDOM_VAR
-#define FIRST_VAR
+#define RANDOM_VAR
+//#define FIRST_VAR
 //#define LAST_VAR
 
 #include "Instance.h"

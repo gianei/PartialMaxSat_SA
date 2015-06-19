@@ -10,7 +10,11 @@
 
 #include "Instance.h"
 
-Instance::Instance() {}
+Instance::Instance() {
+	nvar = 0;
+	nbclauses = 0;
+	top = -1;
+}
 
 void Instance::load(const char *filename){
 	std::ifstream wcnf(filename);

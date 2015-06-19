@@ -81,12 +81,13 @@ void Solution::generate_solution() {
 			// resolvido na compilação para ganhar desempenho
 #ifdef FIRST_VAR
 			values[unsatvars.front()] = 1;
-#elif LAST_VAR
+#elif defined LAST_VAR
 			values[unsatvars.back()] = 1;
 #else
 			values[unsatvars[rand()%unsatvars.size()]] = 1;
 #endif
 		}
+		unsatvars.clear();
 	}
 }
 
@@ -94,7 +95,7 @@ void Solution::neighbour_solution() {
 #ifdef NEIGH_FLIP1
 	int var = rand()%values.size();
 	values[var] = !values[var];
-#elif NEIGH_SWAP2
+#elif defined NEIGH_SWAP2
 	int var1 = rand()%values.size();
 	int var2 = rand()%values.size();
 	int temp = values[var1];
