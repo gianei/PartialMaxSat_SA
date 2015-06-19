@@ -7,8 +7,8 @@
 #include "Solution.h"
 
 // converter soluções infactiveis para factiveis ou descartar
-//#define MAKE_FEASIBLE
-#define DISCARD_UNFEASIBLE
+#define MAKE_FEASIBLE
+//#define DISCARD_UNFEASIBLE
 
 inline float randfloat(){
 	return static_cast<float>(rand())/static_cast<float>(RAND_MAX);
@@ -76,5 +76,5 @@ int main(int argc, char **argv){
 	//sol1.generate_solution();
 	//sol1.print_solution();
 
-	solve_with_sa(prob,1000,0.95f,0.001f,500);
+	solve_with_sa(prob,100,0.9f,0.001f,100);
 }
