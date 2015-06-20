@@ -13,8 +13,8 @@
 //#define NEIGH_SWAP2
 
 // método de factibilização de uma solução infactivel
-//#define RANDOM_VAR
-#define FIRST_VAR
+#define RANDOM_VAR
+//#define FIRST_VAR
 //#define LAST_VAR
 
 #include "Instance.h"

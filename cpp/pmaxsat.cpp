@@ -1,7 +1,10 @@
+// compilar com flag -std=c++11
+
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <chrono>
 
 #include "Instance.h"
 #include "Solution.h"
@@ -24,6 +27,8 @@ void solve_with_sa(Instance &inst,float startingtemp,float coolingrate,float min
 	Solution currentsolution(inst),newsolution(inst);
 	currentsolution.generate_solution();
 	newsolution.generate_solution();
+
+	currentsolution.print_solution();
 
     int currentvalue = currentsolution.calculate_total();
     int newvalue = 0;
@@ -57,10 +62,16 @@ void solve_with_sa(Instance &inst,float startingtemp,float coolingrate,float min
 int main(int argc, char **argv){
 	srand(time(NULL));
 
-	if (argc < 2){
-		std::cout << "Uso: pmaxsatglpk.exe <arquivo wcnf>" << std::endl;
+	if (argc < 6){
+		std::cout << "Uso: pmaxsatglpk.exe <arquivo wcnf> <temperatura inicial> <taxa de resfriamento> <temperatura minima> <iterações>" << std::endl;
 		return 1;
 	}
+
+	float startingtemp = atof(argv[2]);
+	float coolingrate = atof(argv[3]);
+	float mintemp = atof(argv[4]);
+	float maxiter = atof(argv[5]);
+	std::cout << "Params: " << startingtemp << " " << coolingrate << " " << mintemp << " " << maxiter << std::endl;
 
 	Instance prob;
 	try {
@@ -69,12 +80,8 @@ int main(int argc, char **argv){
 		std::cerr << "Arquivo wcnf inválido: " << argv[1] << std::endl;
 	}
 
-	//prob.print_mat();
-	//prob.print_clauses();
-
-	//Solution sol1(prob);
-	//sol1.generate_solution();
-	//sol1.print_solution();
-
-	solve_with_sa(prob,100,0.9f,0.001f,100);
+	std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+	solve_with_sa(prob,startingtemp,coolingrate,mintemp,maxiter);
+	auto elapsed = std::chrono::high_resolution_clock::now() - start;
+	std::cout << "Tempo: " << static_cast<long long>(std::chrono::duration_cast<std::chrono::seconds>(elapsed).count()) << " segundos" << std::endl;
 }
